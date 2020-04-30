@@ -11,11 +11,18 @@ import copy
 from collections import defaultdict
 
 from .device import Device
+from .stm32.device import Stm32Device
 from .device_identifier import DeviceIdentifier
 from .device_identifier import MultiDeviceIdentifier
 from .access import read_only
 
 from .exception import ParserException
+
+def build_device(did, device_file):
+    if did.platform == "stm32":
+        from .stm32.device import Stm32Device
+        return Stm32Device(did, device_file)
+    return Device(did, device_file)
 
 class DeviceFile:
     _PREFIX_ATTRIBUTE = 'attribute-'
@@ -50,7 +57,7 @@ class DeviceFile:
             devices = [did for did in devices if did.string not in invalid_devices]
         if len(valid_devices):
             devices = [did for did in devices if did.string in valid_devices]
-        return [Device(did, self) for did in devices]
+        return [build_device(did, self) for did in devices]
 
     @staticmethod
     def is_valid(node, identifier: DeviceIdentifier):
