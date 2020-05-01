@@ -6,12 +6,14 @@
 # All rights reserved.
 
 import lxml.etree
+import copy
 
 from collections import defaultdict
 
 from .device import Device
 from .device_identifier import DeviceIdentifier
 from .device_identifier import MultiDeviceIdentifier
+from .access import read_only
 
 from .exception import ParserException
 
@@ -65,8 +67,6 @@ class DeviceFile:
 
     def get_properties(self, identifier: DeviceIdentifier):
         class Converter:
-            """
-            """
             def __init__(self, identifier: DeviceIdentifier):
                 self.identifier = identifier
 
@@ -106,7 +106,7 @@ class DeviceFile:
                                 raise ParserException("Attribute '{}' cannot be a list!".format(k))
                             k = k.replace(DeviceFile._PREFIX_ATTRIBUTE, '')
                             v = v[0]
-                        dk[k] = v
+                        dk[k] = read_only(v)
                     d = {t.tag: dk}
                 if list(attrib.keys()) == ['value']:
                     d[t.tag] = attrib['value']
@@ -114,7 +114,7 @@ class DeviceFile:
                     if any(k in d[t.tag] for k in attrib.keys()):
                         raise ParserException("Node children are overwriting attribute '{}'!".format(k))
                     d[t.tag].update(attrib.items())
-                return d
+                return read_only({k:read_only(v) for k,v in d.items()})
 
         properties = Converter(identifier).to_dict(self.rootnode.find("device"))
         return properties["device"]
