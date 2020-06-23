@@ -91,11 +91,191 @@ class DeviceIdentifierTest(unittest.TestCase):
         self.assertEqual(ident.naming_schema, "{platform}")
 
 
+def id_from_string(string):
+    i = DeviceIdentifier("{platform}{family}{name}{pin}{size}{package}{temperature}{variant}")
+    i.set("platform", string[:5])
+    i.set("family", string[5:7])
+    i.set("name", string[7:9])
+    i.set("pin", string[9])
+    i.set("size", string[10])
+    i.set("package", string[11])
+    i.set("temperature", string[12])
+    if len(string) >= 14:
+        i.set("variant", string[13])
+    else:
+        i.set("variant", "")
+    return i
+
 
 class MultiDeviceIdentifierTest(unittest.TestCase):
 
     def setUp(self):
         self.ident = MultiDeviceIdentifier()
+        self.devices = MultiDeviceIdentifier(list(map(id_from_string, [
+            "stm32l151cct6",
+            "stm32l151cct7",
+            "stm32l151ccu6",
+            "stm32l151ccu7",
+            "stm32l151qch6",
+            "stm32l151qdh6",
+            "stm32l151qeh6",
+            "stm32l151rct6",
+            "stm32l151rct6a",
+            "stm32l151rcy6",
+            "stm32l151rdt6",
+            "stm32l151rdt7",
+            "stm32l151rdy6",
+            "stm32l151rdy7",
+            "stm32l151ret6",
+            "stm32l151ucy6",
+            "stm32l151ucy7",
+            "stm32l151vch6",
+            "stm32l151vct6",
+            "stm32l151vct6a",
+            "stm32l151vdt6",
+            "stm32l151vdt6x",
+            "stm32l151vdy6x",
+            "stm32l151vdy7x",
+            "stm32l151vet6",
+            "stm32l151vet7",
+            "stm32l151vey6",
+            "stm32l151vey7",
+            "stm32l151zct6",
+            "stm32l151zdt6",
+            "stm32l151zet6",
+            "stm32l152cct6",
+            "stm32l152ccu6",
+            "stm32l152qch6",
+            "stm32l152qdh6",
+            "stm32l152qeh6",
+            "stm32l152rct6",
+            "stm32l152rct6a",
+            "stm32l152rdt6",
+            "stm32l152rdy6",
+            "stm32l152ret6",
+            "stm32l152ucy6",
+            "stm32l152vch6",
+            "stm32l152vct6",
+            "stm32l152vct6a",
+            "stm32l152vdt6",
+            "stm32l152vdt6x",
+            "stm32l152vet6",
+            "stm32l152vey6",
+            "stm32l152zct6",
+            "stm32l152zdt6",
+            "stm32l152zet6",
+            "stm32l162qdh6",
+            "stm32l162rct6",
+            "stm32l162rct6a",
+            "stm32l162rdt6",
+            "stm32l162rdy6",
+            "stm32l162ret6",
+            "stm32l162vch6",
+            "stm32l162vct6",
+            "stm32l162vct6a",
+            "stm32l162vdt6",
+            "stm32l162vdy6x",
+            "stm32l162vet6",
+            "stm32l162vey6",
+            "stm32l162zdt6",
+            "stm32l162zet6"
+        ])))
+        self.child_devices = MultiDeviceIdentifier(list(map(id_from_string, [
+            "stm32l152qch6",
+            "stm32l152qdh6",
+            "stm32l152qeh6",
+            "stm32l152vch6",
+            "stm32l152rct6a",
+            "stm32l152rdt6",
+            "stm32l152ret6",
+            "stm32l152vct6a",
+            "stm32l152vct6",
+            "stm32l152vdt6x",
+            "stm32l152vdt6",
+            "stm32l152vet6",
+            "stm32l152zct6",
+            "stm32l152zdt6",
+            "stm32l152zet6",
+            "stm32l152rdy6",
+            "stm32l152vey6",
+            "stm32l162qdh6",
+            "stm32l162vch6",
+            "stm32l162rct6a",
+            "stm32l162rdt6",
+            "stm32l162ret6",
+            "stm32l162vct6a",
+            "stm32l162vct6",
+            "stm32l162vdt6",
+            "stm32l162vet6",
+            "stm32l162zdt6",
+            "stm32l162zet6",
+            "stm32l162rdy6",
+            "stm32l162vdy6x",
+            "stm32l162vey6",
+        ])))
+        self.parent_devices = MultiDeviceIdentifier(list(map(id_from_string, [
+            "stm32l151qch6",
+            "stm32l151qdh6",
+            "stm32l151qeh6",
+            "stm32l151vch6",
+            "stm32l151rct6a",
+            "stm32l151rct6",
+            "stm32l151rdt6",
+            "stm32l151rdt7",
+            "stm32l151ret6",
+            "stm32l151vct6a",
+            "stm32l151vct6",
+            "stm32l151vdt6x",
+            "stm32l151vdt6",
+            "stm32l151vet6",
+            "stm32l151vet7",
+            "stm32l151zct6",
+            "stm32l151zdt6",
+            "stm32l151zet6",
+            "stm32l151rcy6",
+            "stm32l151rdy6",
+            "stm32l151rdy7",
+            "stm32l151ucy6",
+            "stm32l151ucy7",
+            "stm32l151vdy6x",
+            "stm32l151vdy7x",
+            "stm32l151vey6",
+            "stm32l151vey7",
+            "stm32l152qch6",
+            "stm32l152qdh6",
+            "stm32l152qeh6",
+            "stm32l152vch6",
+            "stm32l152rct6a",
+            "stm32l152rct6",
+            "stm32l152rdt6",
+            "stm32l152ret6",
+            "stm32l152vct6a",
+            "stm32l152vct6",
+            "stm32l152vdt6x",
+            "stm32l152vdt6",
+            "stm32l152vet6",
+            "stm32l152zct6",
+            "stm32l152zdt6",
+            "stm32l152zet6",
+            "stm32l152rdy6",
+            "stm32l152ucy6",
+            "stm32l152vey6",
+            "stm32l162qdh6",
+            "stm32l162vch6",
+            "stm32l162rct6a",
+            "stm32l162rct6",
+            "stm32l162rdt6",
+            "stm32l162ret6",
+            "stm32l162vct6a",
+            "stm32l162vct6",
+            "stm32l162vdt6",
+            "stm32l162vet6",
+            "stm32l162zdt6",
+            "stm32l162zet6",
+            "stm32l162rdy6",
+            "stm32l162vdy6x",
+            "stm32l162vey6",
+        ])))
 
     def test_should_construct_empty(self):
         self.assertEqual(self.ident.string, "")
@@ -111,3 +291,13 @@ class MultiDeviceIdentifierTest(unittest.TestCase):
 
         self.ident.append(DeviceIdentifier("{one}{two}"))
         self.assertEqual(self.ident.naming_schema, "{one}{one}{two}")
+
+    def test_minimal_subtract_set(self):
+        print(self.devices)
+        print(self.parent_devices)
+        print(self.child_devices)
+
+        min_set = self.child_devices.minimal_subtract_set(self.devices, self.parent_devices)
+        for m in min_set:
+            print([(k, m.getAttribute(k)) for k in self.devices.keys() if m.getAttribute(k)])
+        # self.assertEqual(min_set, "[f1]")

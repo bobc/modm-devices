@@ -316,10 +316,10 @@ class STMDeviceTree:
             else:
                 allSignals = gpioFile.compactQuery('//GPIO_Pin[@Name="{}"]/PinSignal/SpecificParameter[@Name="GPIO_AF"]/..'.format(rname))
                 signalMap = { a.get("Name"): a[0][0].text.lower().replace("gpio_af", "")[:2].replace("_", "") for a in allSignals }
-                altFunctions = [ (s.lower(), (signalMap[s] if s in signalMap else "-1")) for s in localSignals ]
+                altFunctions = [ (s.lower(), signalMap.get(s, "-1")) for s in localSignals ]
 
             afs = []
-            for af in altFunctions:
+            for af in set(altFunctions):
                 for raf in split_multi_af(af[0]):
                     naf = {}
                     naf["driver"], naf["instance"], naf["name"] = raf

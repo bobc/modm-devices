@@ -14,6 +14,7 @@ class DeviceFileTest(unittest.TestCase):
         if DEVICE_FILES is None:
             DEVICE_FILES = {}
             device_files = os.path.join(os.path.dirname(__file__), "../../../devices/**/*.xml")
+            device_files = os.path.join(os.path.dirname(__file__), "../../../devices/stm32/stm32l1-51_52_62-c_d_e.xml")
             device_file_names  = glob.glob(device_files)
 
             # Parse the files and build the :target enumeration
@@ -21,7 +22,7 @@ class DeviceFileTest(unittest.TestCase):
             for device_file_name in device_file_names:
                 for device in parser.parse(device_file_name).get_devices():
                     DEVICE_FILES[device.partname] = device
-        self.devices = DEVICE_FILES
+        self.devices = {"stm32l152vdt6": DEVICE_FILES["stm32l152vdt6"]}
 
 
     def tearDown(self):
@@ -69,6 +70,7 @@ class DeviceFileTest(unittest.TestCase):
                     print("{}: duplicated signals for P{}{}: {}".format(
                             name, gpio["port"].upper(), gpio["pin"], duplicates))
                     failures += 1
+                    # print(gpio)
 
         self.assertEqual(failures, 0, "Found inconsistencies in the device files!")
 
